@@ -25,11 +25,10 @@ words = [""]
 last_words = ""
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    print("connected")
     await websocket.accept()
+    global last_words
     while True:
         data = await websocket.receive_bytes()
-        print('recieved', data[:10], 'end received')
         if not data:
             continue
         try:
@@ -37,9 +36,9 @@ async def websocket_endpoint(websocket: WebSocket):
         except Exception as e:
             response = " "
             print(f"Error: {e}")
-        print(f"Received data: {response}")
         res = response.find(last_words)
-        await websocket.send_text(response[res+len(last_words):])
+        await websocket.send_text(response)
+        # await websocket.send_text(response[res+len(last_words):])
         last_words = response
         # Here you can process the received data and send a response
 
@@ -47,7 +46,7 @@ async def websocket_endpoint(websocket: WebSocket):
 def translate(text):
     if not text:
         return ''
-    translated = GoogleTranslator(source='auto', target='de').translate(text)
+    translated = GoogleTranslator(source='auto', target='en').translate(text)
     return translated
 
 client = OpenAI(api_key="")

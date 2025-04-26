@@ -14,8 +14,8 @@ function StreamAudio() {
 
         ws.onmessage = (event) => {
             const data = event.data;
-            console.log("Received data:", data);
-            setTranslation((prev) => prev.concat(" " + data));
+            setTranslation(data);
+            // setTranslation((prev) => prev.concat(" " + data));
         };
 
         ws.onclose = () => {
@@ -70,7 +70,7 @@ function StreamAudio() {
     //   audio.play();
     }
     recorderRef.current = recorder;
-    recorder.start(2000);
+    recorder.start(1500);
     setRecording(true);
   }
   const stopRecording = () => {
@@ -83,7 +83,6 @@ function StreamAudio() {
       console.error("WebSocket is not open. Unable to send data.");
       return;
     }
-    console.log("Sending data to backend:", bytes);
     webSocketRef.current.send(bytes);
   }
 
