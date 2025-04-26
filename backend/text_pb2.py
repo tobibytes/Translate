@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ntext.proto\x12\ttranslate\" \n\nAudioBytes\x12\x12\n\naudioBytes\x18\x01 \x01(\x0c\"\x1c\n\x0cTextResponse\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x07\n\x05\x45mpty2\x95\x01\n\x12TranslationService\x12;\n\x0eSendAudioBytes\x12\x15.translate.AudioBytes\x1a\x10.translate.Empty(\x01\x12\x42\n\x13ReceiveTextResponse\x12\x10.translate.Empty\x1a\x17.translate.TextResponse0\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ntext.proto\x12\ttranslate\" \n\nAudioBytes\x12\x12\n\naudioBytes\x18\x01 \x01(\x0c\"\x1c\n\x0cTextResponse\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x07\n\x05\x45mpty2\x93\x01\n\x12TranslationService\x12\x39\n\x0eSendAudioBytes\x12\x15.translate.AudioBytes\x1a\x10.translate.Empty\x12\x42\n\x13ReceiveTextResponse\x12\x10.translate.Empty\x1a\x17.translate.TextResponse0\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -38,5 +38,5 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_EMPTY']._serialized_start=89
   _globals['_EMPTY']._serialized_end=96
   _globals['_TRANSLATIONSERVICE']._serialized_start=99
-  _globals['_TRANSLATIONSERVICE']._serialized_end=248
+  _globals['_TRANSLATIONSERVICE']._serialized_end=246
 # @@protoc_insertion_point(module_scope)

@@ -34,7 +34,7 @@ class TranslationServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SendAudioBytes = channel.stream_unary(
+        self.SendAudioBytes = channel.unary_unary(
                 '/translate.TranslationService/SendAudioBytes',
                 request_serializer=text__pb2.AudioBytes.SerializeToString,
                 response_deserializer=text__pb2.Empty.FromString,
@@ -49,7 +49,7 @@ class TranslationServiceStub(object):
 class TranslationServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def SendAudioBytes(self, request_iterator, context):
+    def SendAudioBytes(self, request, context):
         """Client sends a message
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -66,7 +66,7 @@ class TranslationServiceServicer(object):
 
 def add_TranslationServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SendAudioBytes': grpc.stream_unary_rpc_method_handler(
+            'SendAudioBytes': grpc.unary_unary_rpc_method_handler(
                     servicer.SendAudioBytes,
                     request_deserializer=text__pb2.AudioBytes.FromString,
                     response_serializer=text__pb2.Empty.SerializeToString,
@@ -88,7 +88,7 @@ class TranslationService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def SendAudioBytes(request_iterator,
+    def SendAudioBytes(request,
             target,
             options=(),
             channel_credentials=None,
@@ -98,8 +98,8 @@ class TranslationService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_unary(
-            request_iterator,
+        return grpc.experimental.unary_unary(
+            request,
             target,
             '/translate.TranslationService/SendAudioBytes',
             text__pb2.AudioBytes.SerializeToString,
