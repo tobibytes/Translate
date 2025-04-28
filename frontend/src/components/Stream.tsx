@@ -42,57 +42,65 @@ function StreamAudio() {
   const recorderRef = useRef<MediaRecorder | null>(null);
   const [recording, setRecording] = useState(false);
 
-  const startRecording = async () => {
+  const startRecordingAudio = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true})
 
-    const recorder = new MediaRecorder(stream);
+    const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus'});
     const chunks : Blob[] = [];
 
     recorder.ondataavailable = async (event) => {
-      if (event.data.size > 0) 
+      if (event.data.size > 0 && event.data.type.startsWith('audio/'))
         {
             chunks.push(event.data);
             
-            // const chunk: Blob[] = [chunks[chunks.length -1]]
             const audioBlob = new Blob(chunks, {type: 'audio/webm'})
             const buffer = await audioBlob.arrayBuffer();
-            sendToBackend(new Uint8Array(buffer));
+            sendToBackend(buffer, { type: "audio", language: "en" });
 
         }
     }
     recorder.onstop = async () => {
-    //   const audioBlob = new Blob(chunks, {type: 'audio/webm'})
-    //   const buffer = await audioBlob.arrayBuffer();
-    //   sendToBackend(new Uint8Array(buffer));
-
-    //   const url = URL.createObjectURL(audioBlob);
-    //   const audio = new Audio(url);
-    //   audio.play();
+      // const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+      // const buffer = await audioBlob.arrayBuffer();
+      // sendToBackend(buffer);
     }
     recorderRef.current = recorder;
-    recorder.start(1500);
+    recorder.start(3000);
     setRecording(true);
+    
   }
-  const stopRecording = () => {
+  const stopRecordingAudio = () => {
     recorderRef.current?.stop();
     setRecording(false);
   }
 
-  const sendToBackend = (bytes: Uint8Array) => {
-    if (webSocketRef.current.readyState !== WebSocket.OPEN) {
-      console.error("WebSocket is not open. Unable to send data.");
-      return;
+  const sendToBackend = (bytes: ArrayBuffer, metadata: Record<string, any>) => {
+    if (webSocketRef.current?.readyState !== WebSocket.OPEN) {
+        console.error("WebSocket is not open. Unable to send data.");
+        return;
     }
-    webSocketRef.current.send(bytes);
-  }
+
+    // Serialize metadata as JSON
+    const metadataJson = JSON.stringify(metadata);
+    const metadataBytes = new TextEncoder().encode(metadataJson);
+
+    // Combine metadata and audio bytes
+    const combinedBytes = new Uint8Array(metadataBytes.length + bytes.byteLength);
+    combinedBytes.set(metadataBytes, 0); // Add metadata at the beginning
+    combinedBytes.set(new Uint8Array(bytes), metadataBytes.length); // Append audio bytes
+
+    // Send combined data
+    webSocketRef.current.send(combinedBytes);
+};
+
 
   return (
     <>
     <div>
       { recording ? (
-          <button onClick={stopRecording}>Stop</button>
+          <button onClick={stopRecordingAudio}>Stop</button>
         ) : (
-            <button onClick={startRecording}>Start</button>
+            <button onClick={startRecordingAudio}>Start</button>
         )}
         <div>
             <h2>Translation</h2>
